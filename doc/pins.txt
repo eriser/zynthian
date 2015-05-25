@@ -34,28 +34,28 @@ MISO => GPIO-09
 CE0 =>  GPIO-08
 CE1 => GPIO-07
 
-GPIO-24 => PiTFT
-GPIO-25 => PiTFT
+GPIO-24 => Pin 18 => PiTFT
+GPIO-25 => Pin 22 => PiTFT
 
-GPIO-23 => SWITCH? => ON/OFF con PiTFT Touchscreen
-GPIO-22 => SWITCH? => SCREEN CHANGE con PiTFT Touchscreen
-GPIO-21 => HFB
-GPIO-18 => HFB
+GPIO-22 => Pin 15 => SWITCH? => SCREEN CHANGE con PiTFT Touchscreen
+GPIO-23 => Pin 16 => SWITCH? => ON/OFF con PiTFT Touchscreen
+GPIO-21 => Pin 40 => HFB 
+GPIO-18 => Pin 12 => HFB (PCM_CLK)
 
 ROTARY CONTROLLERS
 -------------------
-GPIO-04
-GPIO-17
+GPIO-04 => Pin 7
+GPIO-17 => Pin 11
 
-GPIO-27
-GPIO-12
+GPIO-27 => Pin 13
+GPIO-12 => Pin 32
 
-GPIO-05
-GPIO-13
+GPIO-05 => Pin 29
+GPIO-13 => Pin 33
 
-GPIO-26
-GPIO-16
+GPIO-16 => Pin 36
+GPIO-26 => Pin 37
 
-GPIO-14 => UART
-GPIO-15 => UART
+GPIO-14 => Pin 8 => UART
+GPIO-15 => Pin 10 => UART
 

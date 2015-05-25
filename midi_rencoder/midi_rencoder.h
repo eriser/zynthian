@@ -37,8 +37,10 @@ unsigned int get_value_midi_rencoder(unsigned int i);
 #define max_zyncoders 5
 
 // Pin Assignment
-static unsigned int zyncoder_pin_a[5]={4,27,5,26,23};
-static unsigned int zyncoder_pin_b[5]={17,12,13,16,12};
+//GPIOs: 4,27,5,16,12
+static unsigned int zyncoder_pin_a[5]={7,13,29,36,15};
+//GPIOs: 17,12,13,26,23
+static unsigned int zyncoder_pin_b[5]={11,32,33,37,16};
 
 struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value);
 
