@@ -1,0 +1,85 @@
+ 
+# Dump SD card to File Image 
+cat /dev/sdj > zynthian_sd_devel.img
+
+# Make a second copy
+cp zynthian_sd_devel.img zynthian_sd.img
+ 
+# Setup Looopbak Devices
+kpartx -a zynthian_sd.img
+cd /dev/mapper
+ln -s ../loop0 loop0
+ 
+mkdir /mnt/loop6
+mount /dev/mapper/loop0p6 /mnt/loop6
+cd /mnt/loop6
+# Remove some files to avoid problems
+rm -rf ./etc/ssh/ssh_host*
+# Free some space
+rm -rf /var/cache/apt/*
+rm -rf /opt/Wolfram*
+rm -rf /usr/share/sounds/*GM*
+cd
+umount /mnt/loop6
+
+# Shrink partition
+gparted /dev/mapper/loop0 => Falla al reducir
+
+# From terminal:
+fsck /dev/mapper/loop0p6
+resize2fs -p /dev/mapper/loop0p6 813014
+=> Si se usan 4k blocks => 3252056 KB => 6504112 sectors (512 bytes)
+
+# Forzar el resize:
+resize2fs -p /dev/mapper/loop0p6 720000
+
+
+fdisk -l zynthian_sd.img
+
+Disk zynthian_sd.img: 7,2 GiB, 7746879488 bytes, 15130624 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x000d708a
+
+Disposit.        Inicio     Start     Final  Blocks  Id System
+zynthian_sd.img1             2048   1673828  835890+  e W95 FAT16 (LBA)
+zynthian_sd.img2          1679360  15065087 6692864  85 Linux extended
+zynthian_sd.img3         15065088  15130623   32768  83 Linux
+zynthian_sd.img5          1687552   1810431   61440   c W95 FAT32 (LBA)
+zynthian_sd.img6          1818624  15065087 6623232  83 Linux
+
+# Extraer última partición (img6)
+dd if=zynthian_sd_devel.img of=p.img skip=7713325056 bs=1
+
+# Borrar y recrear la partición img6 con el nuevo tamaño
+=> inicio: 1818624
+=> final: 1818624+6504112=8322736
+
+fdisk zynthian_sd.img
+
+Welcome to fdisk (util-linux 2.24.2).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Orden (m para obtener ayuda): p
+Disk zynthian_sd.img: 7,2 GiB, 7746879488 bytes, 15130624 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x000d708a
+
+Disposit.        Inicio     Start     Final  Blocks  Id System
+zynthian_sd.img1             2048   1673828  835890+  e W95 FAT16 (LBA)
+zynthian_sd.img2          1679360   8366079 3343360  85 Linux extended
+zynthian_sd.img5          1687552   1810431   61440   c W95 FAT32 (LBA)
+zynthian_sd.img6          1818624   8366079 3273728  83 Linux
+
+truncate --size=$[(8366079+1)*512] zynthian_sd.img
+
+truncate --size=$[(7352319+1)*512] zynthian_sd.img
+
+

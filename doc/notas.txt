@@ -1,0 +1,91 @@
+ 
+****************************************************
+***** Open Instruments: U-Connector & Zynthian *****
+****************************************************
+
+#----------------- PRODUCTOS -----------------------
+
+U-CONNECTOR:
+http://sandsoftwaresound.net/rpi-midi-bridge-idea/
+
+ZYNTHIAN:
+ 
+#----------------- SOFTWARE ------------------------
+
+# Jack en el centro de todo! => NO compatible con HifiBerry!!
+#jackd
+
+# Sintes
+zynaddsubfx
+bristol
+timidity
+fluidsynth
+
+# Arpegiador
+qmidiarp
+ 
+# Rutear ALSA MIDI to Jack MIDI:
+a2jmidid --export-hw
+ 
+# Host LADSPA/LV2 genérico:
+jack-rack
+ 
+# Host LADSPA/LV2 Calf
+calf
+ 
+# Host LADSPA/LV2 CLI
+mod-host
+
+# MIDI for serial devices
+http://www.varal.org/ttymidi/
+
+#------------------- HARDWARE ----------------------
+
+# Raspberry
+http://es.rs-online.com/web/b/raspberry-pi/
+http://www.raspipc.es/
+http://www.diotronic.com/raspberry-pi-arduino/raspberry-pi/placas_p_1082.aspx
+
+#Rotary Enconders in RBPi
+https://github.com/jofemodo/rotaryencoder
+https://github.com/astine/rotaryencoder
+
+# Tarjeta de sonido:
+https://www.hifiberry.com/product/hifiberry-dacplus-rca-version/
+
+# TouchScreen
+http://www.adafruit.com/products/1601 => 4 buttons
+http://www.adafruit.com/products/2315 => 4 buttons
+http://www.amazon.es/PiTFT-Mini-Kit-Touchscreen-Raspberry/dp/B00H9B1DTA
+http://www.watterott.com/en/RPi-Display-B-Plus
+
+# Cajas
+http://www.diotronic.com/componentes-mecanicos/cajas/cajas-retex/caja-plastico-aluminio-abox_r_207_6013.aspx
+http://www.diotronic.com/componentes-mecanicos/cajas/cajas-teko/tk362g-fron-al-160x95x45x60x40_r_203_11901.aspx
+http://www.diotronic.com/componentes-mecanicos/cajas/cajas-varias/caja-plastico-130x70x45-negro_r_204_15241.aspx
+http://www.alibaba.com/product-detail/1590B-Colorful-Painting-Aluminum-Effects-Pedal_1242622775.html
+
+# HUBs USB
+http://www.alibaba.com/product-detail/Weichu-USB-HUB-Module_101450179.html
+
+# MIDI Controller
+http://www.halemicro.com/wp/products/umc32m/
+
+# MIDI Connector
+https://zuzebox.wordpress.com/2012/03/18/midi-breakout-board-for-raspberry-pi-v0-10/
+https://zuzebox.wordpress.com/2014/06/26/raspberry-pi-minipiio-midi-board/
+https://zuzebox.wordpress.com/2013/11/26/minipiiio-rs232-set-up/
+
+# FABRICACIÓN DE PCB
+http://reprap.org/wiki/PCB_Milling
+
+#----------------------- HACKS ----------------------
+MIDI OUTPUT FROM RBPI UART:
+http://m0xpd.blogspot.co.uk/2013/01/midi-controller-on-rpi.html
+MIDI OSC CONTROLLER
+http://www.astlab.de/rpi/rpi.shtml
+60 WORKS CONTROLLERS
+http://blog.60works.com/
+
+
+
