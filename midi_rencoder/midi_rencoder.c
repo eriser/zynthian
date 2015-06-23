@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <wiringPi.h>
 #include <alsa/asoundlib.h>
-#include "wiringPi.h"
 
 #include "midi_rencoder.h"
 
@@ -11,45 +11,43 @@ int rencoder_seq_portid;
 
 unsigned int n_midi_rencoders = 0;
 
+int init_rencoder()
+{
+    wiringPiSetup();
+    return init_seq_midi_rencoder();
+}
+
 int init_seq_midi_rencoder()
 {
     if (snd_seq_open(&rencoder_seq_handle, "default", SND_SEQ_OPEN_DUPLEX, 0) < 0) {
         fprintf(stderr, "Error creating ALSA client.\n");
-        return 0;
+        return -1;
     }
-    snd_seq_set_client_name(rencoder_seq_handle, "rencoder" );
+    snd_seq_set_client_name(rencoder_seq_handle, "Zynthian_rencoder" );
 
     if (( rencoder_seq_portid = snd_seq_create_simple_port(rencoder_seq_handle, "Output port",
         SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ,
+	//SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
         SND_SEQ_PORT_TYPE_APPLICATION)) < 0) {
         fprintf(stderr, "Error creating output port.\n" );
-        return 0;
+        return -2;
     }
     return rencoder_seq_portid;
 }
 
-void send_seq_midi_reconder(unsigned int i)
+void send_seq_midi_rencoder(unsigned int i)
 {
     if (i >= n_midi_rencoders || rencoder_seq_handle==NULL) return;
     struct midi_rencoder *midi_rencoder = midi_rencoders + i;
     snd_seq_event_t ev;
-    ev.type=SND_SEQ_EVENT_CONTROLLER;
-    ev.flags=0;
-    ev.tag=0;
-    ev.queue=SND_SEQ_QUEUE_DIRECT;
-    ev.time.time.tv_sec=0;
-    ev.time.time.tv_nsec=0;
-    ev.source.client=0;
-    ev.source.port=rencoder_seq_portid;
-    ev.dest.client=0;
-    ev.dest.port=0;
-    ev.data.control.channel=0;
-    ev.data.control.unused[0]=0;
-    ev.data.control.unused[1]=0;
-    ev.data.control.unused[2]=0;
-    ev.data.control.param=midi_rencoder->midi_ctrl;
-    ev.data.control.value=midi_rencoder->value;
+    snd_seq_ev_clear(&ev);
+    snd_seq_ev_set_direct(&ev);
+    //snd_seq_ev_set_dest(&ev, 64, 0); /* send to 64:0 */
+    snd_seq_ev_set_subs(&ev);        /* send to subscribers of source port */
+    snd_seq_ev_set_controller(&ev, 0, midi_rencoder->midi_ctrl, midi_rencoder->value);
     snd_seq_event_output_direct( rencoder_seq_handle, &ev );
+    //snd_seq_drain_output( rencoder_seq_handle);
+    //printf("SEND MIDI CTRL: %d => %d\n",midi_rencoder->midi_ctrl,midi_rencoder->value);
 }
 
 void update_midi_rencoder(unsigned int i)
@@ -71,9 +69,10 @@ void update_midi_rencoder(unsigned int i)
     }
     midi_rencoder->last_encoded = encoded;
 
-    send_seq_midi_reconder(i);
+    send_seq_midi_rencoder(i);
 }
 
+void update_midi_rencoder_0() { update_midi_rencoder(0); }
 void update_midi_rencoder_1() { update_midi_rencoder(1); }
 void update_midi_rencoder_2() { update_midi_rencoder(2); }
 void update_midi_rencoder_3() { update_midi_rencoder(3); }
@@ -81,16 +80,15 @@ void update_midi_rencoder_4() { update_midi_rencoder(4); }
 void update_midi_rencoder_5() { update_midi_rencoder(5); }
 void update_midi_rencoder_6() { update_midi_rencoder(6); }
 void update_midi_rencoder_7() { update_midi_rencoder(7); }
-void update_midi_rencoder_8() { update_midi_rencoder(8); }
-void *update_midi_rencoder_funcs[8]={
+void (*update_midi_rencoder_funcs[8])={
+    update_midi_rencoder_0,
     update_midi_rencoder_1,
     update_midi_rencoder_2,
     update_midi_rencoder_3,
     update_midi_rencoder_4,
     update_midi_rencoder_5,
     update_midi_rencoder_6,
-    update_midi_rencoder_7,
-    update_midi_rencoder_8
+    update_midi_rencoder_7
 };
 
 struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value)
@@ -129,6 +127,10 @@ unsigned int get_value_midi_rencoder(unsigned int i) {
 
 struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value)
 {
+    // Pin Assignment
+    static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7,3};
+    static unsigned int zyncoder_pin_b[max_zyncoders]={23,27,2,0,4};
+
     if (i >= max_zyncoders)
     {
         printf("Maximum number of Zynthian midi rotary encoders exceded: %i\n", max_zyncoders);
@@ -150,6 +152,8 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, uns
     pullUpDnControl(zyncoder->pin_b, PUD_UP);
     wiringPiISR(zyncoder->pin_a,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
     wiringPiISR(zyncoder->pin_b,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
+
+    n_midi_rencoders++;
 
     return zyncoder;
 }

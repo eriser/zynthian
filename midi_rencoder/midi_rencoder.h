@@ -10,12 +10,15 @@ struct midi_rencoder
     volatile unsigned int last_encoded;
 };
 
+int init_rencoder();
 int init_seq_midi_rencoder();
 void send_seq_midi_reconder(unsigned int i);
 
 //Pre-allocate encoder objects on the stack so we don't have to 
 //worry about freeing them
 struct midi_rencoder midi_rencoders[max_midi_rencoders];
+
+void update_midi_rencoder(unsigned int i);
 
 /*
   Should be run for every rotary encoder you want to control
@@ -35,12 +38,6 @@ unsigned int get_value_midi_rencoder(unsigned int i);
 
 // Zynthian uses some pins for HiFiBerry and PiTFT => left only 5
 #define max_zyncoders 5
-
-// Pin Assignment
-//GPIOs: 4,27,5,16,12
-static unsigned int zyncoder_pin_a[5]={7,13,29,36,15};
-//GPIOs: 17,12,13,26,23
-static unsigned int zyncoder_pin_b[5]={11,32,33,37,16};
 
 struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value);
 

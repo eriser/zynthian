@@ -1,0 +1,40 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          zynthian
+# Required-Start:
+# Required-Stop:
+# Should-Start:      
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Init Zynthian
+# Description:       Init Zynthian
+### END INIT INFO
+
+export HOME=/root
+
+zynthian_start () {
+	cd /home/pi/zynthian
+	./startx-pitft.sh ./zynthian.sh
+}
+
+case "$1" in
+  start|"")
+    zynthian_start
+    ;;
+  restart|reload|force-reload)
+    echo "Error: argument '$1' not supported" >&2
+    exit 3
+    ;;
+  stop)
+    killall synth.sh
+    killall zynthian_autoconnect.py
+    killall zynthian_gui.py
+    ;;
+  status)
+    exit 0
+    ;;
+  *)
+    echo "Usage: zynthian [start|stop]" >&2
+    exit 3
+    ;;
+esac

@@ -1,0 +1,44 @@
+ 
+
+*************************************************
+-------------------------------------------------
+2015-06-17: ZYNTHIAN ALPHA-1
+-------------------------------------------------
+
+Software:
+---------
+
++ Optimizar arranque. Ahora es muy lento.
+	=> https://wiki.debian.org/es/systemd
+x GUI: Fuentes y elementos son muy pequeños => Aumentar tamaños!
+x GUI: Indicar el banco seleccionado
+x GUI: Poner a "cero" los controladores cada vez que se carga un instrumento
++ GUI: Configuración Controladores por Intrumento
+x GUI: Desactivar salvapantallas y cursor del ratón
++ GUI: repensar la GUI!!!
+
++ SWITCH: Apagado => pulsación larga
+	=> https://github.com/notro/fbtft-spindle/wiki/GPIO-keyboard
++ GUI + POTES: Control de la GUI con 2 Potes
+	=> http://stackoverflow.com/questions/16143842/raspberry-pi-gpio-events-in-python
+
++ Selección de Intrumentos Zynthian
++ Colección de Instrumentos Personal
++ Auto-actualización ...
+
+Hardware:
+---------
+
++ Potes: Están muy juntos => Separar
++ Potes: Quedan muy altos => Acortar o comprar mas cortos
++ Potes: La "rallita" indicadora despista y no sirve para nada => Borrar o comprar limpios
++ Conector Potes: En ángulo para minimizar altura
++ TouchScreen: En general no va muy fina => Estudiar capacitiva o mas grande
++ HifiBerry: Conectores JACK
+
++ Caja Aluminio: Concepto bloque compacto con tapa "aprovechable"
++ Caja Chapa Metal Doblado => Lamón
++ Caja Madera Hipster => Cortadora Laser
++ Caja Impresión 3D
+
+*************************************************
