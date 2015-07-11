@@ -6,6 +6,7 @@ struct midi_rencoder
     unsigned int pin_a;
     unsigned int pin_b;
     unsigned int midi_ctrl;
+    unsigned int max_value;
     volatile unsigned int value;
     volatile unsigned int last_encoded;
 };
@@ -25,7 +26,7 @@ void update_midi_rencoder(unsigned int i);
   Returns a pointer to the new rotary encoder structer
   The pointer will be NULL is the function failed for any reason
 */
-struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value); 
+struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value, unsigned int max_value); 
 
 /*
   Returns the value for a specific controller
@@ -39,7 +40,7 @@ unsigned int get_value_midi_rencoder(unsigned int i);
 // Zynthian uses some pins for HiFiBerry and PiTFT => left only 5
 #define max_zyncoders 5
 
-struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value);
+struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value, unsigned int max_value);
 
 /*
   Returns the value for a specific controller

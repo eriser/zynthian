@@ -48,14 +48,14 @@ ROTARY CONTROLLERS
 BCM-04 => GPIO-07 => WPi 7 => Pin 7 
 BCM-17 => GPIO-00 => WPi 0 => Pin 11
 
-BCM-27 => GPIO-02 => WPi 2 => Pin 13
 BCM-05 => GPIO-21 => WPi 21 => Pin 29
+BCM-27 => GPIO-02 => WPi 2 => Pin 13
 
 BCM-12 => GPIO-26 => WPi 26 => Pin 32
 BCM-13 => GPIO-23 => WPi 23 => Pin 33
 
-BCM-16 => GPIO-27 => WPi 27 => Pin 36
 BCM-26 => GPIO-25 => WPi 25 => Pin 37
+BCM-16 => GPIO-27 => WPi 27 => Pin 36
 
 BCM-14 => TxD => WPi 15 => Pin 8 => UART
 BCM-15 => RxD => WPi 16 => Pin 10 => UART

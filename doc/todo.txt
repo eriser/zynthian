@@ -16,6 +16,7 @@ x GUI: Poner a "cero" los controladores cada vez que se carga un instrumento
 + GUI: Configuración Controladores por Intrumento
 x GUI: Desactivar salvapantallas y cursor del ratón
 + GUI: repensar la GUI!!!
++ GUI: Cuelgues!! => Sobrecalentamiento?? => Radiador!! + Ventilación Caja
 
 + SWITCH: Apagado => pulsación larga
 	=> https://github.com/notro/fbtft-spindle/wiki/GPIO-keyboard

@@ -9,10 +9,10 @@ int main()
 
   init_rencoder();
 
-  setup_zyncoder(0,1,90);
-  setup_zyncoder(1,10,90);
-  setup_zyncoder(2,71,90);
-  setup_zyncoder(3,74,90);
+  setup_zyncoder(0,1,90,127);
+  setup_zyncoder(1,10,90,127);
+  setup_zyncoder(2,71,90,127);
+  setup_zyncoder(3,74,90,127);
 
   while(1) {
     /*

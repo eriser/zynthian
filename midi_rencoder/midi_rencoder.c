@@ -27,7 +27,7 @@ int init_seq_midi_rencoder()
 
     if (( rencoder_seq_portid = snd_seq_create_simple_port(rencoder_seq_handle, "Output port",
         SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ,
-	//SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
+        //SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
         SND_SEQ_PORT_TYPE_APPLICATION)) < 0) {
         fprintf(stderr, "Error creating output port.\n" );
         return -2;
@@ -39,6 +39,7 @@ void send_seq_midi_rencoder(unsigned int i)
 {
     if (i >= n_midi_rencoders || rencoder_seq_handle==NULL) return;
     struct midi_rencoder *midi_rencoder = midi_rencoders + i;
+    if (midi_rencoder->midi_ctrl==0) return;
     snd_seq_event_t ev;
     snd_seq_ev_clear(&ev);
     snd_seq_ev_set_direct(&ev);
@@ -61,7 +62,11 @@ void update_midi_rencoder(unsigned int i)
     unsigned int encoded = (MSB << 1) | LSB;
     unsigned int sum = (midi_rencoder->last_encoded << 2) | encoded;
 
-    if (midi_rencoder->value<127 && (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011)) {
+    unsigned int last_value=midi_rencoder->value;
+
+    if (midi_rencoder->value>midi_rencoder->max_value) midi_rencoder->value=midi_rencoder->max_value;
+
+    if (midi_rencoder->value<midi_rencoder->max_value && (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011)) {
         midi_rencoder->value++;
     }
     else if (midi_rencoder->value>0 && (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000)) {
@@ -69,7 +74,7 @@ void update_midi_rencoder(unsigned int i)
     }
     midi_rencoder->last_encoded = encoded;
 
-    send_seq_midi_rencoder(i);
+    if (last_value!=midi_rencoder->value) send_seq_midi_rencoder(i);
 }
 
 void update_midi_rencoder_0() { update_midi_rencoder(0); }
@@ -91,7 +96,7 @@ void (*update_midi_rencoder_funcs[8])={
     update_midi_rencoder_7
 };
 
-struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value)
+struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
     if (n_midi_rencoders > max_midi_rencoders)
     {
@@ -99,12 +104,13 @@ struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b
         return NULL;
     }
     
-    if (value>127) value=127;
+    if (value>max_value) value=max_value;
 
     struct midi_rencoder *newencoder = midi_rencoders + n_midi_rencoders;
     newencoder->pin_a = pin_a;
     newencoder->pin_b = pin_b;
     newencoder->midi_ctrl = midi_ctrl;
+    newencoder->max_value = max_value;
     newencoder->value = value;
     newencoder->last_encoded = 0;
 
@@ -125,7 +131,7 @@ unsigned int get_value_midi_rencoder(unsigned int i) {
     return midi_rencoders[i].value;
 }
 
-struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value)
+struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
     // Pin Assignment
     static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7,3};
@@ -137,12 +143,13 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, uns
         return NULL;
     }
 
-    if (value>127) value=127;
+    if (value>max_value) value=max_value;
 
     struct midi_rencoder *zyncoder = midi_rencoders + i;
     zyncoder->pin_a = zyncoder_pin_a[i];
     zyncoder->pin_b = zyncoder_pin_b[i];
     zyncoder->midi_ctrl = midi_ctrl;
+    zyncoder->max_value = max_value;
     zyncoder->value = value;
     zyncoder->last_encoded = 0;
 
