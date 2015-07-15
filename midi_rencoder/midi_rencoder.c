@@ -13,6 +13,8 @@ unsigned int n_midi_rencoders = 0;
 
 int init_rencoder()
 {
+    int i;
+    for (i=0;i<max_midi_rencoders;i++) midi_rencoders[i].enabled=0;
     wiringPiSetup();
     return init_seq_midi_rencoder();
 }
@@ -37,9 +39,10 @@ int init_seq_midi_rencoder()
 
 void send_seq_midi_rencoder(unsigned int i)
 {
-    if (i >= n_midi_rencoders || rencoder_seq_handle==NULL) return;
+    if (i>=max_midi_rencoders || rencoder_seq_handle==NULL) return;
     struct midi_rencoder *midi_rencoder = midi_rencoders + i;
-    if (midi_rencoder->midi_ctrl==0) return;
+    if (midi_rencoder->enabled==0 || midi_rencoder->midi_ctrl==0) return;
+
     snd_seq_event_t ev;
     snd_seq_ev_clear(&ev);
     snd_seq_ev_set_direct(&ev);
@@ -53,15 +56,14 @@ void send_seq_midi_rencoder(unsigned int i)
 
 void update_midi_rencoder(unsigned int i)
 {
-    if (i >= n_midi_rencoders) return;
-
+    if (i>=max_midi_rencoders) return;
     struct midi_rencoder *midi_rencoder = midi_rencoders + i;
+    if (midi_rencoder->enabled==0) return;
+
     unsigned int MSB = digitalRead(midi_rencoder->pin_a);
     unsigned int LSB = digitalRead(midi_rencoder->pin_b);
-
     unsigned int encoded = (MSB << 1) | LSB;
     unsigned int sum = (midi_rencoder->last_encoded << 2) | encoded;
-
     unsigned int last_value=midi_rencoder->value;
 
     if (midi_rencoder->value>midi_rencoder->max_value) midi_rencoder->value=midi_rencoder->max_value;
@@ -107,6 +109,7 @@ struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b
     if (value>max_value) value=max_value;
 
     struct midi_rencoder *newencoder = midi_rencoders + n_midi_rencoders;
+    newencoder->enabled = 1;
     newencoder->pin_a = pin_a;
     newencoder->pin_b = pin_b;
     newencoder->midi_ctrl = midi_ctrl;
@@ -131,6 +134,12 @@ unsigned int get_value_midi_rencoder(unsigned int i) {
     return midi_rencoders[i].value;
 }
 
+void set_value_midi_rencoder(unsigned int i, unsigned int v) {
+    if (i >= max_midi_rencoders) return;
+    if (v>127) v=127;
+    midi_rencoders[i].value=v;
+}
+
 struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
     // Pin Assignment
@@ -146,6 +155,7 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, uns
     if (value>max_value) value=max_value;
 
     struct midi_rencoder *zyncoder = midi_rencoders + i;
+    zyncoder->enabled = 1;
     zyncoder->pin_a = zyncoder_pin_a[i];
     zyncoder->pin_b = zyncoder_pin_b[i];
     zyncoder->midi_ctrl = midi_ctrl;
@@ -168,4 +178,10 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, uns
 unsigned int get_value_zyncoder(unsigned int i) {
     if (i >= max_zyncoders) return 0;
     return midi_rencoders[i].value;
+}
+
+void set_value_zyncoder(unsigned int i, unsigned int v) {
+    if (i >= max_zyncoders) return;
+    if (v>127) v=127;
+    midi_rencoders[i].value=v;
 }

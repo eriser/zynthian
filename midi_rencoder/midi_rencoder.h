@@ -3,12 +3,13 @@
 
 struct midi_rencoder
 {
-    unsigned int pin_a;
-    unsigned int pin_b;
-    unsigned int midi_ctrl;
-    unsigned int max_value;
-    volatile unsigned int value;
-    volatile unsigned int last_encoded;
+	unsigned int enabled;
+	unsigned int pin_a;
+	unsigned int pin_b;
+	unsigned int midi_ctrl;
+	unsigned int max_value;
+	volatile unsigned int value;
+	volatile unsigned int last_encoded;
 };
 
 int init_rencoder();
@@ -34,6 +35,11 @@ struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b
 unsigned int get_value_midi_rencoder(unsigned int i);
 
 /*
+  Set the value for a specific controller
+*/
+void set_value_midi_rencoder(unsigned int i, unsigned int v);
+
+/*
  Zynthian Encoders
 */
 
@@ -46,3 +52,8 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, uns
   Returns the value for a specific controller
 */
 unsigned int get_value_zyncoder(unsigned int i);
+
+/*
+  Set the value for a specific controller
+*/
+void set_value_zyncoder(unsigned int i, unsigned int v);
