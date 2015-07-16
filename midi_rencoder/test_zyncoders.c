@@ -9,6 +9,9 @@ int main()
 
   init_rencoder();
 
+  setup_gpio_switch(0,3);
+  setup_gpio_switch(0,4);
+
   setup_zyncoder(0,1,90,127);
   setup_zyncoder(1,10,90,127);
   setup_zyncoder(2,71,90,127);
@@ -25,6 +28,8 @@ int main()
       usleep(5000);
     }
     */
+    printf("SW0 = %d\n", get_gpio_switch(0));
+    printf("SW1 = %d\n", get_gpio_switch(1));
     printf("ZC0 = %d\n", get_value_zyncoder(0));
     printf("ZC1 = %d\n", get_value_zyncoder(1));
     printf("ZC2 = %d\n", get_value_zyncoder(2));

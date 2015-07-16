@@ -1,3 +1,9 @@
+//-----------------------------------------------------------------------------
+// Zynthian Project: C Library for RPi GPIO Switches and Rotary Encoders
+//-----------------------------------------------------------------------------
+// by José Fernando Moyano Domínguez (2015)
+//-----------------------------------------------------------------------------
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -9,11 +15,14 @@
 snd_seq_t *rencoder_seq_handle=NULL;
 int rencoder_seq_portid;
 
-unsigned int n_midi_rencoders = 0;
+//-----------------------------------------------------------------------------
+// Library Initialization
+//-----------------------------------------------------------------------------
 
 int init_rencoder()
 {
     int i;
+    for (i=0;i<max_gpio_switches;i++) gpio_switches[i].enabled=0;
     for (i=0;i<max_midi_rencoders;i++) midi_rencoders[i].enabled=0;
     wiringPiSetup();
     return init_seq_midi_rencoder();
@@ -36,6 +45,71 @@ int init_seq_midi_rencoder()
     }
     return rencoder_seq_portid;
 }
+
+//-----------------------------------------------------------------------------
+// GPIO Switches
+//-----------------------------------------------------------------------------
+
+void update_gpio_switch(unsigned int i)
+{
+    if (i>=max_gpio_switches) return;
+    struct gpio_switch *gpio_switch = gpio_switches + i;
+    if (gpio_switch->enabled==0) return;
+
+    gpio_switch->status= digitalRead(gpio_switch->pin);
+}
+
+void update_gpio_switch_0() { update_gpio_switch(0); }
+void update_gpio_switch_1() { update_gpio_switch(1); }
+void update_gpio_switch_2() { update_gpio_switch(2); }
+void update_gpio_switch_3() { update_gpio_switch(3); }
+void update_gpio_switch_4() { update_gpio_switch(4); }
+void update_gpio_switch_5() { update_gpio_switch(5); }
+void update_gpio_switch_6() { update_gpio_switch(6); }
+void update_gpio_switch_7() { update_gpio_switch(7); }
+void (*update_gpio_switch_funcs[8])={
+    update_gpio_switch_0,
+    update_gpio_switch_1,
+    update_gpio_switch_2,
+    update_gpio_switch_3,
+    update_gpio_switch_4,
+    update_gpio_switch_5,
+    update_gpio_switch_6,
+    update_gpio_switch_7
+};
+
+//-----------------------------------------------------------------------------
+
+struct gpio_switch *setup_gpio_switch(unsigned int i, unsigned int pin)
+{
+    if (i >= max_gpio_switches)
+    {
+        printf("Maximum number of gpio switches exceded: %i\n", max_gpio_switches);
+        return NULL;
+    }
+    
+    struct gpio_switch *gpio_switch = gpio_switches + i;
+    gpio_switch->enabled = 1;
+    gpio_switch->pin = pin;
+    gpio_switch->status = 0;
+
+    pinMode(pin, INPUT);
+    pullUpDnControl(pin, PUD_UP);
+    wiringPiISR(pin,INT_EDGE_BOTH, update_gpio_switch_funcs[i]);
+
+    return gpio_switch;
+}
+
+unsigned int get_gpio_switch(unsigned int i) {
+    if (i >= max_gpio_switches) return 0;
+    unsigned int status=gpio_switches[i].status;
+    gpio_switches[i].status=0;
+    return status;
+}
+
+//-----------------------------------------------------------------------------
+// Generic Rotary Encoders
+//-----------------------------------------------------------------------------
 
 void send_seq_midi_rencoder(unsigned int i)
 {
@@ -98,35 +172,38 @@ void (*update_midi_rencoder_funcs[8])={
     update_midi_rencoder_7
 };
 
-struct midi_rencoder *setup_midi_rencoder(unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
+//-----------------------------------------------------------------------------
+
+struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
-    if (n_midi_rencoders > max_midi_rencoders)
+    if (i > max_midi_rencoders)
     {
         printf("Maximum number of midi rotary encoders exceded: %i\n", max_midi_rencoders);
         return NULL;
     }
     
+
+    struct midi_rencoder *rencoder = midi_rencoders + i;
     if (value>max_value) value=max_value;
+    rencoder->midi_ctrl = midi_ctrl;
+    rencoder->max_value = max_value;
+    rencoder->value = value;
 
-    struct midi_rencoder *newencoder = midi_rencoders + n_midi_rencoders;
-    newencoder->enabled = 1;
-    newencoder->pin_a = pin_a;
-    newencoder->pin_b = pin_b;
-    newencoder->midi_ctrl = midi_ctrl;
-    newencoder->max_value = max_value;
-    newencoder->value = value;
-    newencoder->last_encoded = 0;
+    if (rencoder->enabled==0 || rencoder->pin_a!=pin_a || rencoder->pin_b!=pin_b) {
+        rencoder->enabled = 1;
+        rencoder->pin_a = pin_a;
+        rencoder->pin_b = pin_b;
+        rencoder->last_encoded = 0;
 
-    pinMode(pin_a, INPUT);
-    pinMode(pin_b, INPUT);
-    pullUpDnControl(pin_a, PUD_UP);
-    pullUpDnControl(pin_b, PUD_UP);
-    wiringPiISR(pin_a,INT_EDGE_BOTH, update_midi_rencoder_funcs[n_midi_rencoders]);
-    wiringPiISR(pin_b,INT_EDGE_BOTH, update_midi_rencoder_funcs[n_midi_rencoders]);
+        pinMode(pin_a, INPUT);
+        pinMode(pin_b, INPUT);
+        pullUpDnControl(pin_a, PUD_UP);
+        pullUpDnControl(pin_b, PUD_UP);
+        wiringPiISR(pin_a,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
+        wiringPiISR(pin_b,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
+    }
 
-    n_midi_rencoders++;
-
-    return newencoder;
+    return rencoder;
 }
 
 unsigned int get_value_midi_rencoder(unsigned int i) {
@@ -140,37 +217,41 @@ void set_value_midi_rencoder(unsigned int i, unsigned int v) {
     midi_rencoders[i].value=v;
 }
 
+//-----------------------------------------------------------------------------
+// Zynthian Rotary Encoders
+//-----------------------------------------------------------------------------
+
 struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
-    // Pin Assignment
-    static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7,3};
-    static unsigned int zyncoder_pin_b[max_zyncoders]={23,27,2,0,4};
-
     if (i >= max_zyncoders)
     {
         printf("Maximum number of Zynthian midi rotary encoders exceded: %i\n", max_zyncoders);
         return NULL;
     }
 
-    if (value>max_value) value=max_value;
-
     struct midi_rencoder *zyncoder = midi_rencoders + i;
-    zyncoder->enabled = 1;
-    zyncoder->pin_a = zyncoder_pin_a[i];
-    zyncoder->pin_b = zyncoder_pin_b[i];
+    if (value>max_value) value=max_value;
     zyncoder->midi_ctrl = midi_ctrl;
     zyncoder->max_value = max_value;
     zyncoder->value = value;
-    zyncoder->last_encoded = 0;
 
-    pinMode(zyncoder->pin_a, INPUT);
-    pinMode(zyncoder->pin_b, INPUT);
-    pullUpDnControl(zyncoder->pin_a, PUD_UP);
-    pullUpDnControl(zyncoder->pin_b, PUD_UP);
-    wiringPiISR(zyncoder->pin_a,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
-    wiringPiISR(zyncoder->pin_b,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
+    // Pin Assignment
+    static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7,3};
+    static unsigned int zyncoder_pin_b[max_zyncoders]={23,27,2,0,4};
 
-    n_midi_rencoders++;
+    if (zyncoder->enabled==0 || zyncoder->pin_a!=zyncoder_pin_a[i] || zyncoder->pin_b!=zyncoder_pin_b[i]) {
+        zyncoder->enabled = 1;
+        zyncoder->pin_a = zyncoder_pin_a[i];
+        zyncoder->pin_b = zyncoder_pin_b[i];
+        zyncoder->last_encoded = 0;
+
+        pinMode(zyncoder->pin_a, INPUT);
+        pinMode(zyncoder->pin_b, INPUT);
+        pullUpDnControl(zyncoder->pin_a, PUD_UP);
+        pullUpDnControl(zyncoder->pin_b, PUD_UP);
+        wiringPiISR(zyncoder->pin_a,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
+        wiringPiISR(zyncoder->pin_b,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
+    }
 
     return zyncoder;
 }
