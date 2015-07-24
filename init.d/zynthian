@@ -11,10 +11,12 @@
 ### END INIT INFO
 
 export HOME=/root
+export FRAMEBUFFER=/dev/fb1
 
 zynthian_start () {
 	cd /home/pi/zynthian
-	./startx-pitft.sh ./zynthian.sh
+	#./startx-pitft.sh ./zynthian.sh
+	startx ./zynthian.sh
 }
 
 case "$1" in
@@ -26,9 +28,9 @@ case "$1" in
     exit 3
     ;;
   stop)
-    killall synth.sh
-    killall zynthian_autoconnect.py
     killall zynthian_gui.py
+    killall zynthian_autoconnect.py
+    sleep 1
     ;;
   status)
     exit 0

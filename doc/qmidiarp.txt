@@ -1,0 +1,33 @@
+
++ Instalar:
+
+=> qmidiarp: https://sourceforge.net/projects/qmidiarp/
+
+=> jalv: http://drobilla.net/software/jalv/
+
+=> jackd
+
++ Listar módulos LV2:
+
+=> lv2ls
+
++ Ejecutar qmidiarp como módulo LV2:
+
+=> jalv.qt https://git.code.sf.net/p/qmidiarp/arp
+
+=> Hay que configurar que jackd arranque con device "dummy"
+
++ Utilizar la libraría "jackclient-python"
+
+=> http://jackclient-python.readthedocs.org/en/0.3.0/
+import jack
+client = jack.Client("MyGreatClient")
+in_ports=client.midi_inports.register("midi_in")
+out_ports=client.midi_outports.register("midi_out")
+client.get_ports()
+client.activate()
+client.connect("system:capture_1", "MyGreatClient:input_1")
+client.connect("MyGreatClient:output_1", "system:playback_1")
+client.connect(out2, "system:playback_2")
+in2.connect("system:capture_2")
+etc.
