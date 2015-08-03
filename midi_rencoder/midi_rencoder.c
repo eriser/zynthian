@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 #include <wiringPi.h>
 #include <alsa/asoundlib.h>
 
@@ -52,11 +53,19 @@ int init_seq_midi_rencoder()
 
 void update_gpio_switch(unsigned int i)
 {
+    struct timespec ts;
+    double tsns;
+
     if (i>=max_gpio_switches) return;
     struct gpio_switch *gpio_switch = gpio_switches + i;
     if (gpio_switch->enabled==0) return;
 
-    gpio_switch->status= digitalRead(gpio_switch->pin);
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    tsns=ts.tv_sec*1000000 + ts.tv_nsec/1000;
+
+    gpio_switch->status=digitalRead(gpio_switch->pin);
+    if (gpio_switch->status==1) gpio_switch->dtus=tsns-gpio_switch->tsus;
+    else gpio_switch->tsus=tsns;
 }
 
 void update_gpio_switch_0() { update_gpio_switch(0); }
@@ -91,6 +100,8 @@ struct gpio_switch *setup_gpio_switch(unsigned int i, unsigned int pin)
     struct gpio_switch *gpio_switch = gpio_switches + i;
     gpio_switch->enabled = 1;
     gpio_switch->pin = pin;
+    gpio_switch->tsus = 0;
+    gpio_switch->dtus = 0;
     gpio_switch->status = 0;
 
     pinMode(pin, INPUT);
@@ -104,7 +115,16 @@ unsigned int get_gpio_switch(unsigned int i) {
     if (i >= max_gpio_switches) return 0;
     unsigned int status=gpio_switches[i].status;
     gpio_switches[i].status=0;
+    gpio_switches[i].dtus=0;
     return status;
+}
+
+unsigned int get_gpio_switch_dtus(unsigned int i) {
+    if (i >= max_gpio_switches) return 0;
+    unsigned int dtus=gpio_switches[i].dtus;
+    gpio_switches[i].status=0;
+    gpio_switches[i].dtus=0;
+    return dtus;
 }
 
 //-----------------------------------------------------------------------------
@@ -215,6 +235,7 @@ void set_value_midi_rencoder(unsigned int i, unsigned int v) {
     if (i >= max_midi_rencoders) return;
     if (v>127) v=127;
     midi_rencoders[i].value=v;
+    send_seq_midi_rencoder(i);
 }
 
 //-----------------------------------------------------------------------------
@@ -265,4 +286,5 @@ void set_value_zyncoder(unsigned int i, unsigned int v) {
     if (i >= max_zyncoders) return;
     if (v>127) v=127;
     midi_rencoders[i].value=v;
+    send_seq_midi_rencoder(i);
 }

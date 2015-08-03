@@ -22,6 +22,8 @@ struct gpio_switch
 {
 	unsigned int enabled;
 	unsigned int pin;
+	volatile double tsus;
+	volatile unsigned int dtus;
 	volatile unsigned int status;
 };
 
@@ -32,6 +34,7 @@ struct gpio_switch gpio_switches[max_gpio_switches];
 void update_gpio_switch(unsigned int i);
 struct gpio_switch *setup_gpio_switch(unsigned int i, unsigned int pin); 
 unsigned int get_gpio_switch(unsigned int i);
+unsigned int get_gpio_switch_dtus(unsigned int i);
 
 //-----------------------------------------------------------------------------
 // Generic Rotary Encoders

@@ -1,0 +1,54 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=zynthian_controller
+*Date=17:57:16
+*CreatedBy=Fritzing 0.8.7b.01.24.1bf5
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;100nF;100 mil [THT, multilayer];14.1772;-34.0946;0;Bottom;C1
+2;;;11.684;-59.6679;0;Bottom;Copper Fill22
+3;;;10.9093;-60.468;0;Bottom;Copper Fill4
+4;;;10.2616;-29.7467;0;Bottom;Copper Fill13
+5;;;8.9916;-17.3388;0;Bottom;Copper Fill18
+6;;;12.8397;-33.3408;0;Bottom;Copper Fill9
+7;;;10.9093;-60.468;0;Bottom;Copper Fill19
+8;;;14.9225;-4.6134;0;Bottom;Copper Fill31
+9;;;8.3693;-9.6172;0;Bottom;Copper Fill16
+10;;;7.6962;-35.5887;0;Bottom;Copper Fill29
+11;;;10.1092;-24.0571;0;Bottom;Copper Fill11
+12;;molex-1x6_lock;8.63803;-4.18327;0;Bottom;Head-6
+13;;;9.4234;-6.3406;0;Bottom;Copper Fill2
+14;;;11.684;-59.6679;0;Bottom;Copper Fill6
+15;;;14.9225;-2.8862;0;Bottom;Copper Fill14
+16;;;11.684;-24.0571;0;Bottom;Copper Fill27
+17;;;10.1092;-59.6679;0;Bottom;Copper Fill21
+18;;;10.9093;-24.8572;0;Bottom;Copper Fill25
+19;;;8.9916;-31.258;0;Bottom;Copper Fill3
+20;;;11.684;-24.0571;0;Bottom;Copper Fill12
+21;;;5.969;-35.5887;0;Bottom;Copper Fill28
+22;;;10.1092;-24.0571;0;Bottom;Copper Fill26
+23;;;8.3693;-45.228;0;Bottom;Copper Fill23
+24;;;8.9916;-32.909;0;Bottom;Copper Fill17
+25;;;12.065;-34.1155;0;Bottom;Copper Fill10
+26;;;15.7988;-3.7371;0;Bottom;Copper Fill15
+27;;;8.3693;-43.6532;0;Bottom;Copper Fill7
+28;;;10.9093;-58.8932;0;Bottom;Copper Fill20
+29;;;15.7988;-3.7371;0;Bottom;Copper Fill33
+30;;;10.1092;-59.6679;0;Bottom;Copper Fill5
+31;;;14.9225;-2.8862;0;Bottom;Copper Fill32
+32;;;9.4869;-28.972;0;Bottom;Copper Fill30
+33;;;12.8397;-34.9156;0;Bottom;Copper Fill8
+34;;;6.1722;-24.146;0;Bottom;Copper Fill1
+35;;;8.43046;-52.0019;0;Bottom;ENC1
+36;;;8.43046;-16.3753;0;Bottom;ENC2
+37;;molex-1x2_lock;6.64816;-34.166;-90;Bottom;SW2
+38;100nF;100 mil [THT, multilayer];8.23446;-29.7224;0;Bottom;C2
+39;;;12.8397;-34.9156;0;Bottom;Copper Fill24

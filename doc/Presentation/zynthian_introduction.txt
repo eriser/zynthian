@@ -1,0 +1,131 @@
+ 
+
+
+Zynthian Introduction
+----------------------
+
+Zynthian es un Sintentizador y Fuente de Sonido Digital completamente actualizable y fácilmente personalizable.
+
+Zynthian es una Plataforma Abierta para Sínteisis de Sonido. Su diseño utiliza únicamente componentes de 
+hardware abierto y software libre.
+
+Zynthian puede ser conectado a cualquier fuente MIDI (teclado, saxo, secuenciador, ...) y sintetiza sonidos
+utilizando algoritmos matemáticos o fuentes pre-grabadas. Además, incorpora una potente batería de 
+filtros y efectos.
+
+Zynthian incorpora una interesante librería de "sonidos" que puedes ampliar con facilidad. Cada "sonido" 
+tiene asignados controles MIDI con los que puedes jugar desde el propio Zynthian o desde un contralador
+MIDI externo.
+
+¿Que puedo hacer con el?
+------------------------
+
++ Conectarlo a un instrumento MIDI o MIDI-USB y tocar en vivo
+
++ Integrarlo en un estudio de producción musical
+
++ Hackearlo! Aprender y colaborar con el proyecto
+
++ Arrojarlo al paso de una manada de Elefantes
+
+¿Que lo hace Único?
+-------------------
+
++ En una sola frase => Su diseño es libre y abierto
+
+Esto implica que:
+
++ Puedes añadir tus propias librerías o actualizar las existentes
+
++ Puedes actualizarlo con las nuevas versiones del Software Zynthian oficial
+
++ Puedes instalar versiones del Software Zynthian modificadas por terceros
+
++ Puedes instalar software completamente diferente al oficial
+
++ Puedes modificarlo como quieras: Software y Hardware =>
+
+	- reconfigurar los parámetros de síntesis (frecuencia, nº de bits, nº de voces, etc.)
+	- añadir un nuevo motor de síntesis o mejorar los existentes (paralelizar el ZynAddSubFX estaría bien ;-)
+	- añadir un nuevo controlador hardware o modificar los existentes
+	- añadir nuevos elementos: arpegiador, secuenciador, contralador LFO, etc.
+	- etc.
+
+Características Hardware:
+-------------------------
+
++ Caja de chapa de acero troquelado
+
++ Raspberry Pi 2 Model B: 900MHz quad-core ARM Cortex-A7 CPU, 1GB RAM, 4xUSB, Ethernet
+
++ Audio HifiBerry: hasta 192KHz/24bits, 48KHz/16bit por defecto (*)
+
++ Pantalla Tactil Adafruit PiTFT 2.8' Resistiva
+
++ 4 x Controladores Rotativos/Pulsadores
+
++ Conector MIDI IN
+
++ Tarjeta SD de 8GB
+
++ Opcional: Batería Litio con Autonomía para 1 hora
+
+(*) HifiBerry está disponible con 3 versiones, según el tipo de salida: RCA, Jack o SPDIF
+
+
+Características Software:
+-------------------------
+
+Zynthian utiliza Raspbian como Sistema Operativo. Raspbian es una distribución de Linux para RaspBerry Pi basada
+a su vez en Debian (Jessie).
+La lista de los componentes software utilizados por Zynthian es muy larga y estaría fuera de lugar enumerarla aquí.
+Me limitaré a describir los componentes relevantes para la Síntesis de Sonido:
+
+ZynAddSubFX:
+------------
+ZynAddSubFX is a open source software synthesizer capable of making a countless number of instruments, from some common heard from expensive hardware to interesting sounds that you'll boost to an amazing universe of sounds.
+
+Features:
+
++ RealTime Synth
++ Polyphonic synth (allows playing more than one note at once)
++ Mutlitimbral synth (allows playing more than one instrument at once)
++ Microtonal capabilities with any scale, up to 128 notes per octave, and key mapping
++ Three synthesizer engines:
+	+ "ADsynth" or "ADnote" is a complex engine which makes sounds by adding a number of voices. Each one has filters, envelopes, LFOs, morphing, modulation (Ring Modulation, Phase Modulation... the modulators can have any shape), resonance, etc. Each voice includes a very powerful waveform generator with up to 128 sine/non-sine harmonics. You can use Fourier synthesis or if you don't like it you can wave-shaping/filtering of functions. This engine includes anti-aliasing.
+	+ "SUBsynth" or "SUBnote" is a simple engine which makes sounds through subtraction of harmonics from white noise
+	+ "PADsynth" or "PADnote" is engine that makes very beautiful pads and other instruments. (these instruments can be exported for use with other programs too)
++ Legato, Poly, and Mono modes
++ Instruments can be organized in kits, which allows you to make drum kits or layered(mixed) instruments; this makes possible to use more than one instrument for a single part. It is possible to choose what items from the kit should be processed by the Part's effects.
++ Effects: Reverb, Echo, Chorus/Flange, Phaser, AlienWah (it's a kind of vocal morpher), Distortion(Wave-shaping), EQ, DynamicFilter
+	+ The effects can behave as System Effects or as Insertion Effects; this allows to use many effects at the same time. You can put any insertion effect on any part(or more insertion effects to same parts, if you like so) or you can put the insertion effect to Master output (very useful if you use the EQ effect). Also, you can have instrument's effect (which save with the instrument).
+	+ Filters up to 60dB/octave (or more..); filters can be analogic (LPF,HPF, BPF,etc.), formant(advanced formant filters) and state variable (SVF)
++ Envelopes can have ADSR (or ASR, etc..) modes or can be free modes (with any shape)
++ Many settings have a "randomness" option, which you can make instruments that every time produces a subtle different sound; this produces a very pleasant effect (like analogue synths or natural instruments that can't produces exactly same sound twice). Because of this, even if it is digital synthesis, it sounds "warm". Listen the ogg vorbis demos from this page to hear this effect.
++ The specifications can be easily changed, so (for example) if you want to change the number of voices or parts to a higher value or to allow a higher number of effects at the same time, there is necessary to change only a single value from the source file (globals.h) and to recompile the program
++ Intuitive and easy to use User Interface with Clipboard and many objects has user presets
++ Midi support (supports many controllers) and (if you want) JACK support
++ The graphical user interface can be completely disabled if the user need so
++ Over 300 high quality instruments included
++ It is a free program, licensed under version 2 of the GNU General Public License
++ Many other features... It is is impossible to describe all this program's features in just a page
+
+More Info: http://zynaddsubfx.sourceforge.net/
+
+
+FluidSynth:
+-----------
+FluidSynth is a real-time software synthesizer based on the SoundFont 2 specifications and has reached widespread distribution. 
+FluidSynth itself does not have a graphical user interface, but due to its powerful API several applications utilize it and it has even found its way onto embedded systems and is used in some mobile apps.
+
+Features:
+
++ Cross platform (Linux, Mac OSX and Windows to name a few)
++ SoundFont 2 support
++ Realtime effect control using SoundFont 2.01 modulators
++ Playback of MIDI files
++ Shared library which can be used in other programs
++ Built in command line shell
++ It is a free program, licensed under version 2 of the GNU General Public License
+
+More Info: http://www.fluidsynth.org/

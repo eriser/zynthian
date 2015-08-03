@@ -76,8 +76,22 @@ https://zuzebox.wordpress.com/2012/03/18/midi-breakout-board-for-raspberry-pi-v0
 https://zuzebox.wordpress.com/2014/06/26/raspberry-pi-minipiio-midi-board/
 https://zuzebox.wordpress.com/2013/11/26/minipiiio-rs232-set-up/
 
-# FABRICACIÓN DE PCB
+# FABRICACIÓN DIY DE PCB
 http://reprap.org/wiki/PCB_Milling
+
+#CARGADOR/FUENTE DE ALIMENTACIÓN + BATERÍAS
+http://www.adafruit.com/products/2465
+http://www.adafruit.com/products/1944
+http://www.adafruit.com/category/44
+
+# Conector MIDI de carcasa
+http://jt1electronica.xopie.com/es/product/din-hembra-panel-rosca-int-m16x075-h8
+
+# Tornillería, etc.
+http://www.shoptronica.com/
+
+# Fabricación de PCB
+http://be.eurocircuits.com/shop/orders/configurator.aspx
 
 #----------------------- HACKS ----------------------
 MIDI OUTPUT FROM RBPI UART:
