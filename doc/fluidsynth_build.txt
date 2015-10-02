@@ -1,0 +1,11 @@
+
+configure.ac, line 88 =>
+
+dnl Default soundfont path 
+case "${host_os}" in mingw*)
+  AC_DEFINE(DEFAULT_SOUNDFONT, "C:\\\\soundfonts\\\\default.sf2", [Default soundfont])
+  ;;
+  *) 
+  AC_DEFINE(DEFAULT_SOUNDFONT, "share/soundfonts/default.sf2", [Default soundfont])
+  ;;
+esac 

@@ -142,10 +142,10 @@ void send_seq_midi_rencoder(unsigned int i)
     snd_seq_ev_set_direct(&ev);
     //snd_seq_ev_set_dest(&ev, 64, 0); /* send to 64:0 */
     snd_seq_ev_set_subs(&ev);        /* send to subscribers of source port */
-    snd_seq_ev_set_controller(&ev, 0, midi_rencoder->midi_ctrl, midi_rencoder->value);
-    snd_seq_event_output_direct( rencoder_seq_handle, &ev );
-    //snd_seq_drain_output( rencoder_seq_handle);
-    //printf("SEND MIDI CTRL: %d => %d\n",midi_rencoder->midi_ctrl,midi_rencoder->value);
+    snd_seq_ev_set_controller(&ev, midi_rencoder->midi_chan, midi_rencoder->midi_ctrl, midi_rencoder->value);
+    snd_seq_event_output_direct(rencoder_seq_handle, &ev);
+    //snd_seq_drain_output(rencoder_seq_handle);
+    //printf("SEND MIDI CHAN %d, CTRL %d = %d\n",midi_rencoder->midi_chan,midi_rencoder->midi_ctrl,midi_rencoder->value);
 }
 
 void update_midi_rencoder(unsigned int i)
@@ -194,7 +194,7 @@ void (*update_midi_rencoder_funcs[8])={
 
 //-----------------------------------------------------------------------------
 
-struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, unsigned int pin_b, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
+struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, unsigned int pin_b, unsigned int midi_chan, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
     if (i > max_midi_rencoders)
     {
@@ -204,7 +204,10 @@ struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, un
     
 
     struct midi_rencoder *rencoder = midi_rencoders + i;
+    if (midi_chan>15) midi_chan=0;
+    if (midi_ctrl>127) midi_ctrl=1;
     if (value>max_value) value=max_value;
+    rencoder->midi_chan = midi_chan;
     rencoder->midi_ctrl = midi_ctrl;
     rencoder->max_value = max_value;
     rencoder->value = value;
@@ -242,7 +245,7 @@ void set_value_midi_rencoder(unsigned int i, unsigned int v) {
 // Zynthian Rotary Encoders
 //-----------------------------------------------------------------------------
 
-struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
+struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_chan, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
 {
     if (i >= max_zyncoders)
     {
@@ -251,7 +254,10 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_ctrl, uns
     }
 
     struct midi_rencoder *zyncoder = midi_rencoders + i;
+    if (midi_chan>15) midi_chan=0;
+    if (midi_ctrl>127) midi_ctrl=1;
     if (value>max_value) value=max_value;
+    zyncoder->midi_chan = midi_chan;
     zyncoder->midi_ctrl = midi_ctrl;
     zyncoder->max_value = max_value;
     zyncoder->value = value;

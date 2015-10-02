@@ -22,10 +22,16 @@
 			height: 100%;
 		}
 		body {
+			/*overflow: hidden;*/
 			width: 100%;
 			height: 100%;
 			background-color: #002255;
 			text-align: center;
+		}
+		canvas {
+			position: absolute;
+			left: 0px;
+			top: 0px;
 		}
 		audio {
 			background: #002255;
@@ -41,23 +47,31 @@
 		}
 		p.zynthian_text {
 			margin: 0px;
+			margin-bottom: 20%;
 			padding: 5%;
 			text-align: center;
 			font-family: Arial;
 			font-size: 26px;
 			font-weight: normal;
 			color: transparent;
-			text-shadow: 0 0 4px rgba(248,207,43,0.7); /* #f8cf2b */
+			text-shadow: 0 0 3px rgba(248,207,43,0.9); /* #f8cf2b */
 		}
 		</style>
+
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/stats.js/build/stats.min.js"></script>
 	</head>
 
 	<body>
+		<canvas></canvas>
 		<div class="zynthian_splash"></div>
-		<p class="zynthian_text">the Open Synth Platform based in Raspberry Pi, ZynAddSubFX and more...</p>
+		<p class="zynthian_text">the Open Synth Platform based in Raspberry Pi, Linux, ZynAddSubFX and more...</p>
 		<audio controls autoplay>
 			<source src="snd/zynthian_demo3.mp3" type="audio/mpeg">
 			Your browser does not support the audio element.
 		</audio>
+
+		<script src="js/constallation.js"></script>
+		<script src="js/main.js"></script>
 	</body>
 </html>

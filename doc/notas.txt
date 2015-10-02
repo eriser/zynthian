@@ -92,6 +92,7 @@ http://www.shoptronica.com/
 
 # Fabricación de PCB
 http://be.eurocircuits.com/shop/orders/configurator.aspx
+http://fab.fritzing.org/fritzing-fab
 
 #----------------------- HACKS ----------------------
 MIDI OUTPUT FROM RBPI UART:

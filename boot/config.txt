@@ -45,28 +45,20 @@
 #sdram_freq=500
 #over_voltage=2
 
-# NOOBS Auto-generated Settings:
-hdmi_force_hotplug=1
-config_hdmi_boost=4
-overscan_left=24
-overscan_right=24
-overscan_top=16
-overscan_bottom=16
-disable_overscan=1
+# Uncomment this to enable the lirc-rpi module
+#dtoverlay=lirc-rpi
+
+# Additional overlays and parameters are documented /boot/overlays/README
 
 # HifiBerry driver:
 dtoverlay=hifiberry-dacplus
 
+# PiTFT Config
+dtparam=spi=on
+dtparam=i2c_arm=on
+#dtoverlay=pitft28r,rotate=90,speed=32000000,fps=20
+dtoverlay=pitft28-resistive,rotate=90,speed=32000000,fps=20
+
 # Adjust Serial Port Clock to allow MIDI baudrate 31250 
 init_uart_clock=2441406
-
-# PiTFT Config
-[pi1]
-device_tree=bcm2708-rpi-b-plus.dtb
-[pi2]
-device_tree=bcm2709-rpi-2-b.dtb
-[all]
-dtparam=spi=on
-dtparam=i2c1=on
-dtparam=i2c_arm=on
-dtoverlay=pitft28r,rotate=90,speed=32000000,fps=20
+init_uart_baud=38400
