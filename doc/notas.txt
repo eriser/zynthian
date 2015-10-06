@@ -90,6 +90,19 @@ http://jt1electronica.xopie.com/es/product/din-hembra-panel-rosca-int-m16x075-h8
 # Tornillería, etc.
 http://www.shoptronica.com/
 
+# Rotary Encoders
+http://es.rs-online.com
++ El que pedí: PEC11R-4020F-N0024 (plano, no detents, no switch, 20mm)
++ El que me gustaría: 
+	- PEC11R-4015K-S0024 (moleteado, no detents, switch, 15mm)
+	- PEC11R-4215K-S0024 (moleteado, 24 detents, switch, 15mm)
++ Los que tienen ahora mismo:
+	- PEC11R-4015F-S0024 (plano, no detents, switch, 15mm)
+	- PEC11R-4215F-S0024 (plano, 24 detents, switch, 15mm)
+	- PEC11R-4215K-S0024 (moleteado, 24 detents, switch, 15mm) (***) => Este!!
+	- PEC11R-4220K-N0024 (moleteado, 24 detents, no switch, 20mm)
+
+
 # Fabricación de PCB
 http://be.eurocircuits.com/shop/orders/configurator.aspx
 http://fab.fritzing.org/fritzing-fab

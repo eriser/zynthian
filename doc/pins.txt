@@ -60,3 +60,72 @@ BCM-16 => GPIO-27 => WPi 27 => Pin 36
 BCM-14 => TxD => WPi 15 => Pin 8 => UART
 BCM-15 => RxD => WPi 16 => Pin 10 => UART
 
+
+---------------------------------------
+ASIGNACIÓN ZYNTHIAN PROTOTYPE 1
+---------------------------------------
+
+CONTROLLER 1:
+-----------------------------------
+Cable		Función				GPIO		Pin#
+-----------------------------------
+1				Enc2-A				21			29
+2				Enc1-B				25			37
+3				GND						GND			34
+4				Enc2-B				26			32
+5				Enc1-A				27			36
+6				Enc1-SW				23			33
+
+CONTROLLER 2:
+-----------------------------------
+Cable		Función				GPIO		Pin#
+-----------------------------------
+1				Enc2-A				7				7
+2				Enc1-B				4				16
+3				GND						GND			14
+4				Enc2-B				0				11
+5				Enc1-A				3				15
+6				Enc1-SW				2				13
+
+MIDI & AUX:
+-----------------------------------
+Cable		Función				GPIO		Pin#
+-----------------------------------
+1				Vdc						3.3V		1
+2				GND						GND			6
+3				MIDI-IN-4			-				4 (MIDI-IN Connector => 2º por la dcha)
+4				MIDI-IN-5			-				5 (MIDI-IN Connector => 2º por la izda)
+5				RxD						RxD			10
+6				NONE
+
+---------------------------------------
+ASIGNACIÓN ZYNTHIAN PROTOTYPE 2
+---------------------------------------
+
+CONTROLLER 1:
+-----------------------------------
+Cable		Función				GPIO		Pin#
+-----------------------------------
+1				Enc1-B				25			37
+2				Enc1-A				27			36
+3				Enc1-SW				23			33
+4				Enc2-B				26			32
+5				Enc2-A				21			29
+6				GND						GND			30
+
+CONTROLLER 2:
+-----------------------------------
+Cable		Función				GPIO		Pin#
+-----------------------------------
+1				Enc1-B				4				16
+2				Enc1-A				3				15
+3				Enc1-SW				2				13
+4				Enc2-B				0				11
+5				Enc2-A				7				7
+6				GND						GND			14
+
+
+
+
+
+

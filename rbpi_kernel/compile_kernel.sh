@@ -1,10 +1,12 @@
 #!/bin/bash
 
-PATH=$PATH:/home/txino/Zauber/zynthian/rbpi_kernel/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+export PATH=$PATH:/home/txino/Zauber/zynthian/rbpi_kernel/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
 
 # For RBPI2
 cd linux
 KERNEL=kernel7
+
+# Default Config for RBPI2
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig
 
 # Menu Config

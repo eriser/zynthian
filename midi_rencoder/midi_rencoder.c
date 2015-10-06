@@ -262,9 +262,13 @@ struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_chan, uns
     zyncoder->max_value = max_value;
     zyncoder->value = value;
 
-    // Pin Assignment
-    static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7,3};
-    static unsigned int zyncoder_pin_b[max_zyncoders]={23,27,2,0,4};
+    // Pin Assignment Prototype 1 => Switches 3,4
+    //static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7};
+    //static unsigned int zyncoder_pin_b[max_zyncoders]={23,27,2,0};
+    // Pin Assignment Prototype 2 => Switches 23,2
+    static unsigned int zyncoder_pin_a[max_zyncoders]={27,21,3,7}; 
+    static unsigned int zyncoder_pin_b[max_zyncoders]={25,26,4,0};
+
 
     if (zyncoder->enabled==0 || zyncoder->pin_a!=zyncoder_pin_a[i] || zyncoder->pin_b!=zyncoder_pin_b[i]) {
         zyncoder->enabled = 1;
