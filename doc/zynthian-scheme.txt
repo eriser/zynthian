@@ -1,7 +1,0 @@
-
-ZINTHIAN
-
- - Adaptador MIDI/UART para Raspberry => ttymidi => ZynAddSubFx
- - Rotary Encoders => Driver PiREM => Midi => ZynAddSubFx
- - GUI PiTFT Presets/Controls => Midi / CLI => ZynAddSubFx
- 

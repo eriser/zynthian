@@ -1,0 +1,11 @@
+README
+alsaseq.c
+setup.py
+./alsamidi.py
+./midiinstruments.py
+alsaseq.egg-info/PKG-INFO
+alsaseq.egg-info/SOURCES.txt
+alsaseq.egg-info/dependency_links.txt
+alsaseq.egg-info/not-zip-safe
+alsaseq.egg-info/requires.txt
+alsaseq.egg-info/top_level.txt
