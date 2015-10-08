@@ -163,10 +163,10 @@ void update_midi_rencoder(unsigned int i)
     if (midi_rencoder->value>midi_rencoder->max_value) midi_rencoder->value=midi_rencoder->max_value;
 
     if (midi_rencoder->value<midi_rencoder->max_value && (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011)) {
-        midi_rencoder->value++;
+        midi_rencoder->value+=1;
     }
     else if (midi_rencoder->value>0 && (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000)) {
-        midi_rencoder->value--;
+        midi_rencoder->value-=1;
     }
     midi_rencoder->last_encoded = encoded;
 
@@ -201,7 +201,6 @@ struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, un
         printf("Maximum number of midi rotary encoders exceded: %i\n", max_midi_rencoders);
         return NULL;
     }
-    
 
     struct midi_rencoder *rencoder = midi_rencoders + i;
     if (midi_chan>15) midi_chan=0;
@@ -236,64 +235,6 @@ unsigned int get_value_midi_rencoder(unsigned int i) {
 
 void set_value_midi_rencoder(unsigned int i, unsigned int v) {
     if (i >= max_midi_rencoders) return;
-    if (v>127) v=127;
-    midi_rencoders[i].value=v;
-    send_seq_midi_rencoder(i);
-}
-
-//-----------------------------------------------------------------------------
-// Zynthian Rotary Encoders
-//-----------------------------------------------------------------------------
-
-struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_chan, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
-{
-    if (i >= max_zyncoders)
-    {
-        printf("Maximum number of Zynthian midi rotary encoders exceded: %i\n", max_zyncoders);
-        return NULL;
-    }
-
-    struct midi_rencoder *zyncoder = midi_rencoders + i;
-    if (midi_chan>15) midi_chan=0;
-    if (midi_ctrl>127) midi_ctrl=1;
-    if (value>max_value) value=max_value;
-    zyncoder->midi_chan = midi_chan;
-    zyncoder->midi_ctrl = midi_ctrl;
-    zyncoder->max_value = max_value;
-    zyncoder->value = value;
-
-    // Pin Assignment Prototype 1 => Switches 3,4
-    //static unsigned int zyncoder_pin_a[max_zyncoders]={26,25,21,7};
-    //static unsigned int zyncoder_pin_b[max_zyncoders]={23,27,2,0};
-    // Pin Assignment Prototype 2 => Switches 23,2
-    static unsigned int zyncoder_pin_a[max_zyncoders]={27,21,3,7}; 
-    static unsigned int zyncoder_pin_b[max_zyncoders]={25,26,4,0};
-
-
-    if (zyncoder->enabled==0 || zyncoder->pin_a!=zyncoder_pin_a[i] || zyncoder->pin_b!=zyncoder_pin_b[i]) {
-        zyncoder->enabled = 1;
-        zyncoder->pin_a = zyncoder_pin_a[i];
-        zyncoder->pin_b = zyncoder_pin_b[i];
-        zyncoder->last_encoded = 0;
-
-        pinMode(zyncoder->pin_a, INPUT);
-        pinMode(zyncoder->pin_b, INPUT);
-        pullUpDnControl(zyncoder->pin_a, PUD_UP);
-        pullUpDnControl(zyncoder->pin_b, PUD_UP);
-        wiringPiISR(zyncoder->pin_a,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
-        wiringPiISR(zyncoder->pin_b,INT_EDGE_BOTH, update_midi_rencoder_funcs[i]);
-    }
-
-    return zyncoder;
-}
-
-unsigned int get_value_zyncoder(unsigned int i) {
-    if (i >= max_zyncoders) return 0;
-    return midi_rencoders[i].value;
-}
-
-void set_value_zyncoder(unsigned int i, unsigned int v) {
-    if (i >= max_zyncoders) return;
     if (v>127) v=127;
     midi_rencoders[i].value=v;
     send_seq_midi_rencoder(i);

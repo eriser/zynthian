@@ -37,7 +37,7 @@ unsigned int get_gpio_switch(unsigned int i);
 unsigned int get_gpio_switch_dtus(unsigned int i);
 
 //-----------------------------------------------------------------------------
-// Generic Rotary Encoders
+// MIDI Rotary Encoders
 //-----------------------------------------------------------------------------
 
 // 17 pins / 2 pins per encoder = 8 maximum encoders
@@ -70,15 +70,3 @@ void update_midi_rencoder(unsigned int i);
 struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, unsigned int pin_b, unsigned int midi_chan, unsigned int midi_ctrl, unsigned int value, unsigned int max_value); 
 unsigned int get_value_midi_rencoder(unsigned int i);
 void set_value_midi_rencoder(unsigned int i, unsigned int v);
-
-
-//-----------------------------------------------------------------------------
-// Zynthian Rotary Encoders
-//-----------------------------------------------------------------------------
-
-// Zynthian uses some pins for HiFiBerry and PiTFT => left only 5
-#define max_zyncoders 5
-
-struct midi_rencoder *setup_zyncoder(unsigned int i, unsigned int midi_chan, unsigned int midi_ctrl, unsigned int value, unsigned int max_value);
-unsigned int get_value_zyncoder(unsigned int i);
-void set_value_zyncoder(unsigned int i, unsigned int v);
