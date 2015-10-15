@@ -88,3 +88,10 @@ sudo apt-get install libfltk1.3 libfltk-images1.3 liblo7 libmxml1
 curl -SLs https://apt.adafruit.com/add | sudo bash
 sudo apt-get install -y raspberrypi-bootloader
 
+#------------------------------------------------
+# Módulos Python3
+#------------------------------------------------
+sudo apt-get install python3-pip
+sudo pip-3.2 install python-osc
+
+
