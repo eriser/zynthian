@@ -7,29 +7,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include <wiringPi.h>
 #include <alsa/asoundlib.h>
+#include <lo/lo.h>
 
 #include "midi_rencoder.h"
 
+// ALSA MIDI vars
 snd_seq_t *rencoder_seq_handle=NULL;
 int rencoder_seq_portid;
+
+// Liblo OSC vars
+lo_address rencoder_lo_addr;
+char rencoder_osc_port_str[8];
 
 //-----------------------------------------------------------------------------
 // Library Initialization
 //-----------------------------------------------------------------------------
 
-int init_rencoder()
+int init_rencoder(int osc_port)
 {
     int i;
     for (i=0;i<max_gpio_switches;i++) gpio_switches[i].enabled=0;
     for (i=0;i<max_midi_rencoders;i++) midi_rencoders[i].enabled=0;
     wiringPiSetup();
-    return init_seq_midi_rencoder();
+    return init_seq_midi_rencoder(osc_port);
 }
 
-int init_seq_midi_rencoder()
+int init_seq_midi_rencoder(int osc_port)
 {
     if (snd_seq_open(&rencoder_seq_handle, "default", SND_SEQ_OPEN_DUPLEX, 0) < 0) {
         fprintf(stderr, "Error creating ALSA client.\n");
@@ -44,6 +52,13 @@ int init_seq_midi_rencoder()
         fprintf(stderr, "Error creating output port.\n" );
         return -2;
     }
+    
+    if (osc_port) {
+        sprintf(rencoder_osc_port_str,"%d",osc_port);
+        //printf("OSC PORT: %s\n",rencoder_osc_port_str);
+        rencoder_lo_addr=lo_address_new(NULL,rencoder_osc_port_str);
+    }
+    
     return rencoder_seq_portid;
 }
 
@@ -131,21 +146,27 @@ unsigned int get_gpio_switch_dtus(unsigned int i) {
 // Generic Rotary Encoders
 //-----------------------------------------------------------------------------
 
-void send_seq_midi_rencoder(unsigned int i)
+void send_midi_rencoder(unsigned int i)
 {
-    if (i>=max_midi_rencoders || rencoder_seq_handle==NULL) return;
+    if (i>=max_midi_rencoders) return;
     struct midi_rencoder *midi_rencoder = midi_rencoders + i;
-    if (midi_rencoder->enabled==0 || midi_rencoder->midi_ctrl==0) return;
+    if (midi_rencoder->enabled==0) return;
 
-    snd_seq_event_t ev;
-    snd_seq_ev_clear(&ev);
-    snd_seq_ev_set_direct(&ev);
-    //snd_seq_ev_set_dest(&ev, 64, 0); /* send to 64:0 */
-    snd_seq_ev_set_subs(&ev);        /* send to subscribers of source port */
-    snd_seq_ev_set_controller(&ev, midi_rencoder->midi_chan, midi_rencoder->midi_ctrl, midi_rencoder->value);
-    snd_seq_event_output_direct(rencoder_seq_handle, &ev);
-    //snd_seq_drain_output(rencoder_seq_handle);
-    //printf("SEND MIDI CHAN %d, CTRL %d = %d\n",midi_rencoder->midi_chan,midi_rencoder->midi_ctrl,midi_rencoder->value);
+    if (rencoder_seq_handle!=NULL && midi_rencoder->midi_ctrl>0) {
+        snd_seq_event_t ev;
+        snd_seq_ev_clear(&ev);
+        snd_seq_ev_set_direct(&ev);
+        //snd_seq_ev_set_dest(&ev, 64, 0); /* send to 64:0 */
+        snd_seq_ev_set_subs(&ev);        /* send to subscribers of source port */
+        snd_seq_ev_set_controller(&ev, midi_rencoder->midi_chan, midi_rencoder->midi_ctrl, midi_rencoder->value);
+        snd_seq_event_output_direct(rencoder_seq_handle, &ev);
+        //snd_seq_drain_output(rencoder_seq_handle);
+        //printf("SEND MIDI CHAN %d, CTRL %d = %d\n",midi_rencoder->midi_chan,midi_rencoder->midi_ctrl,midi_rencoder->value);
+    }
+    else if (rencoder_lo_addr!=NULL && midi_rencoder->osc_path[0]) {
+        lo_send(rencoder_lo_addr,midi_rencoder->osc_path, "i", midi_rencoder->value);
+        //printf("SEND OSC %s => %d\n",midi_rencoder->osc_path,midi_rencoder->value);
+    }
 }
 
 void update_midi_rencoder(unsigned int i)
@@ -170,7 +191,7 @@ void update_midi_rencoder(unsigned int i)
     }
     midi_rencoder->last_encoded = encoded;
 
-    if (last_value!=midi_rencoder->value) send_seq_midi_rencoder(i);
+    if (last_value!=midi_rencoder->value) send_midi_rencoder(i);
 }
 
 void update_midi_rencoder_0() { update_midi_rencoder(0); }
@@ -194,7 +215,7 @@ void (*update_midi_rencoder_funcs[8])={
 
 //-----------------------------------------------------------------------------
 
-struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, unsigned int pin_b, unsigned int midi_chan, unsigned int midi_ctrl, unsigned int value, unsigned int max_value)
+struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, unsigned int pin_b, unsigned int midi_chan, unsigned int midi_ctrl, char *osc_path, unsigned int value, unsigned int max_value)
 {
     if (i > max_midi_rencoders)
     {
@@ -208,6 +229,9 @@ struct midi_rencoder *setup_midi_rencoder(unsigned int i, unsigned int pin_a, un
     if (value>max_value) value=max_value;
     rencoder->midi_chan = midi_chan;
     rencoder->midi_ctrl = midi_ctrl;
+    //printf("OSC PATH: %s\n",osc_path);
+    if (osc_path) strcpy(rencoder->osc_path,osc_path);
+    else rencoder->osc_path[0]=0;
     rencoder->max_value = max_value;
     rencoder->value = value;
 
@@ -237,5 +261,5 @@ void set_value_midi_rencoder(unsigned int i, unsigned int v) {
     if (i >= max_midi_rencoders) return;
     if (v>127) v=127;
     midi_rencoders[i].value=v;
-    send_seq_midi_rencoder(i);
+    send_midi_rencoder(i);
 }

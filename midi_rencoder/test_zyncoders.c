@@ -7,15 +7,15 @@ int main()
 {
   printf("HOLA ZYNCODERS!");
 
-  init_rencoder();
+  init_rencoder(6699);
 
   setup_gpio_switch(0,3);
   setup_gpio_switch(0,4);
 
-  setup_midi_rencoder(0,25,27,0,1,90,127);
-  setup_midi_rencoder(1,26,21,0,10,90,127);
-  setup_midi_rencoder(2,4,3,0,71,90,127);
-  setup_midi_rencoder(3,0,7,0,74,90,127);
+  setup_midi_rencoder(0,25,27,0,1,NULL,90,127);
+  setup_midi_rencoder(1,26,21,0,10,NULL,90,127);
+  setup_midi_rencoder(2,4,3,0,71,NULL,90,127);
+  setup_midi_rencoder(3,0,7,0,74,NULL,90,127);
 
   while(1) {
     /*
