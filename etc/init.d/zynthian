@@ -11,34 +11,44 @@
 ### END INIT INFO
 
 export HOME=/root
+export HOME_ZYNTHIAN=/home/pi/
 export FRAMEBUFFER=/dev/fb1
 
 zynthian_start () {
-	cd /home/pi/zynthian
+	cd $HOME_ZYNTHIAN/zynthian
 	#./startx-pitft.sh ./zynthian.sh
 	startx ./zynthian.sh -- :0 vt3 &
 }
 
+zynthian_stop () {
+	killall zynthian.sh
+	killall zynthian_gui.py
+	killall ttymidi
+	killall zynthian_autoconnect.py
+}
+
 case "$1" in
-  start|"")
-    zynthian_start
-    ;;
-  restart|reload|force-reload)
-    echo "Error: argument '$1' not supported" >&2
-    exit 3
-    ;;
+	start|"")
+		zynthian_start
+		;;
+	startx|"")
+		export ZYNTHIANX=1
+		xauth merge $HOME_ZYNTHIAN/.Xauthority
+		zynthian_start
+		;;
+	restart|reload|force-reload)
+		echo "Error: argument '$1' not supported" >&2
+		exit 3
+		;;
   stop)
-    killall zynthian.sh
-    killall zynthian_gui.py
-    killall ttymidi
-    killall zynthian_autoconnect.py
-    sleep 1
-    ;;
-  status)
-    exit 0
-    ;;
-  *)
-    echo "Usage: zynthian [start|stop]" >&2
-    exit 3
-    ;;
+		zynthian_stop
+		sleep 1
+		;;
+	status)
+		exit 0
+		;;
+	*)
+		echo "Usage: zynthian [start|stop]" >&2
+		exit 3
+		;;
 esac
