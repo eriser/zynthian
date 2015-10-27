@@ -32,7 +32,7 @@ case "$1" in
 		zynthian_start
 		;;
 	startx|"")
-		export ZYNTHIANX=1
+		export ZYNTHIANX=$DISPLAY
 		xauth merge $HOME_ZYNTHIAN/.Xauthority
 		zynthian_start
 		;;

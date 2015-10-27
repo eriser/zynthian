@@ -91,6 +91,7 @@ sudo apt-get install -y raspberrypi-bootloader
 sudo apt-get install autoconf
 sudo apt-get install libtool
 sudo apt-get install cmake
+sudo apt-get install cmake-curses-gui
 
 sudo apt-get install gcc-4.8 g++-4.8
 sudo update-alternatives --remove-all gcc 
