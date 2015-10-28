@@ -158,3 +158,14 @@ mkdir build
 cd build
 cmake ..
 sudo make install
+
+#------------------------------------------------
+# Install TkinterTreectrl
+#------------------------------------------------
+sudo apt-get install tktreectrl
+cd $ZYNTHIAN_DIR/software
+wget http://downloads.sourceforge.net/project/tkintertreectrl/TkinterTreectrl-2.0/TkinterTreectrl-2.0.1.zip
+unzip TkinterTreectrl-2.0.1.zip
+cd TkinterTreectrl-2.0.1
+python3 setup.py build
+sudo python3 setup.py install
