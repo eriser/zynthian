@@ -54,6 +54,8 @@ sudo apt-get install tree
 sudo apt-get install joe
 sudo apt-get install fbi
 sudo apt-get install scrot # Screenshot Capture
+sudo apt-get install i2c-tools
+#sudo apt-get install python-smbus (i2c with python)
 
 # Fluidsynth & SF2
 sudo apt-get install fluidsynth fluid-soundfont-gm fluid-soundfont-gs
