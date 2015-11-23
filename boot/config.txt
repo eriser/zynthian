@@ -1,6 +1,12 @@
-# For more options and information see 
+# For more options and information see
 # http://www.raspberrypi.org/documentation/configuration/config-txt.md
 # Some settings may impact device functionality. See link above for details
+
+# Tell bootloader to use initram image
+#initramfs initrd.img-4.1.13-v7+
+
+# Load RT Kernel for RBPI2
+#kernel=kernel7-rt.img
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
@@ -39,26 +45,39 @@
 # uncomment for composite PAL
 #sdtv_mode=2
 
+# Disable Splash Screen
+disable_splash=1
+
+# Disables dynamic frequency clocking
+force_turbo=1
+
 #uncomment to overclock the arm. 700 MHz is the default.
-#arm_freq=1000
-#core_freq=500
-#sdram_freq=500
-#over_voltage=2
+arm_freq=900
+core_freq=250
+sdram_freq=450
+over_voltage=2
+
+# Uncomment some or all of these to enable the optional hardware interfaces
+dtparam=i2c_arm=on
+dtparam=i2s=on
+dtparam=spi=on
 
 # Uncomment this to enable the lirc-rpi module
 #dtoverlay=lirc-rpi
 
 # Additional overlays and parameters are documented /boot/overlays/README
 
+# Enable MMAP support (Jackd, etc.)
+dtoverlay=i2s-mmap
+
 # HifiBerry driver:
 dtoverlay=hifiberry-dacplus
 
 # PiTFT Config
-dtparam=spi=on
-dtparam=i2c_arm=on
 #dtoverlay=pitft28r,rotate=90,speed=32000000,fps=20
 dtoverlay=pitft28-resistive,rotate=90,speed=32000000,fps=20
 
 # Adjust Serial Port Clock to allow MIDI baudrate 31250 
-init_uart_clock=2441406
+init_uart_clock=2441000
 init_uart_baud=38400
+dtparam=uart0_clkrate=3000000

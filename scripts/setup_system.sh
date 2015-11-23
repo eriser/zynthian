@@ -118,6 +118,16 @@ sudo apt-get install libncurses-dev
 #sudo apt-get install liblo-dev => Se compila desde el repositorio
 
 #------------------------------------------------
+# Patched Versions of Jackd/Jackd2
+#------------------------------------------------
+wget -O - http://rpi.autostatic.com/autostatic.gpg.key| sudo apt-key add -
+sudo wget -O /etc/apt/sources.list.d/autostatic-audio-raspbian.list http://rpi.autostatic.com/autostatic-audio-raspbian.list
+sudo apt-get update
+sudo apt-get --no-install-recommends install jackd1
+#sudo apt-get --no-install-recommends install jackd2
+sudo apt-get install a2jmidid
+
+#------------------------------------------------
 # Módulos Python3
 #------------------------------------------------
 sudo apt-get install python3-pip
@@ -171,3 +181,11 @@ unzip TkinterTreectrl-2.0.1.zip
 cd TkinterTreectrl-2.0.1
 python3 setup.py build
 sudo python3 setup.py install
+
+#------------------------------------------------
+# Install Linuxsampler
+#------------------------------------------------
+sudo apt-get install linuxsampler
+sudo apt-get install qsampler
+
+

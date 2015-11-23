@@ -1,7 +1,7 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          asplashscreen
-# Required-Start:
+# Required-Start:    mountdevsubfs mountall
 # Required-Stop:
 # Should-Start:      
 # Default-Start:     S
@@ -15,9 +15,11 @@
 #insserv /etc/init.d/asplashscreen
 
 do_start () {
+  if [ -c /dev/fb1 ]; then
     cat /home/pi/zynthian/img/fb1_zynthian.raw > /dev/fb1
-    #/usr/bin/fbi -T 1 -noverbose -a /home/pi/zynthian/img/zynthian_gui_splash.png
-    #/usr/bin/fbi -T 2 -d /dev/fb1 -noverbose -a /home/pi/zynthian/img/zynthian_gui_splash.png
+  fi  
+  #/usr/bin/fbi -T 1 -noverbose -a /home/pi/zynthian/img/zynthian_gui_splash.png
+  #/usr/bin/fbi -T 2 -d /dev/fb1 -noverbose -a /home/pi/zynthian/img/zynthian_gui_splash.png
 }
 
 case "$1" in

@@ -1,9 +1,0 @@
-There is an ugly hack that will probably work.
-Get the UART talking at whatever rate it supports (e.g. 38400). 
-The input to the UART is a 3MHz clock. You can vary that clock with the 
-config.txt parameter init_uart_clock.
-
-So, you want to make that 3MHz x 31250 / 38400.
-
-So add to config.txt
-init_uart_clock=2441406
