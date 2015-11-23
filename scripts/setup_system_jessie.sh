@@ -1,7 +1,9 @@
 #!/bin/bash
 
-export ZYNTHIAN_DIR="/home/pi"
-export ZYNTHIAN_SW_DIR="/home/pi/zynthian"
+export ZYNTHIAN_HOME_DIR="/home/pi"
+export ZYNTHIAN_DATA_DIR="/home/pi/zynthian-data"
+export ZYNTHIAN_SW_DIR="/home/pi/zynthian-sw"
+export ZYNTHIAN_UI_DIR="/home/pi/zynthian"
 
 #------------------------------------------------
 # Update System
@@ -30,10 +32,10 @@ sudo echo "CONF_SWAPSIZE=0" > /etc/dphys-swapfile
 sudo chmod a+rw /dev/ttyAMA0
 
 # Modules
-sudo cp $ZYNTHIAN_SW_DIR/etc/modules /etc
+sudo cp $ZYNTHIAN_UI_DIR/etc/modules /etc
 
 # Copy & Soft Link Init Scripts
-sudo cp $ZYNTHIAN_SW_DIR/etc/init.d/* /etc/init.d
+sudo cp $ZYNTHIAN_UI_DIR/etc/init.d/* /etc/init.d
 sudo ln -s /etc/init.d/asplashscreen /etc/rcS.d/S01asplashscreen
 sudo ln -s /etc/init.d/zynthian /etc/rc2.d/S01zynthian
 sudo ln -s /etc/init.d/zynthian /etc/rc3.d/S01zynthian
@@ -55,7 +57,7 @@ sudo systemctl enable asplashscreen
 sudo systemctl enable zynthian
 
 # Initd Services
-sudo cp $ZYNTHIAN_SW_DIR/etc/inittab /etc
+sudo cp $ZYNTHIAN_UI_DIR/etc/inittab /etc
 #sudo cp $ZYNTHIAN_DIR/etc/rc.local /etc
 sudo update-rc.d -f raspi-config remove
 sudo update-rc.d -f dphys-swapfile remove
@@ -71,12 +73,12 @@ sudo update-rc.d zynthian enable
 # X11 Config
 sudo mv /usr/share/X11/xorg.conf.d /usr/share/X11/xorg.conf.d.nouse
 sudo mkdir /etc/X11/xorg.conf.d
-sudo cp $ZYNTHIAN_SW_DIR/etc/X11/xorg.conf.d/99-calibration.conf /etc/X11/xorg.conf.d
-sudo cp $ZYNTHIAN_SW_DIR/etc/X11/xorg.conf.d/99-pitft.conf /etc/X11/xorg.conf.d
+sudo cp $ZYNTHIAN_UI_DIR/etc/X11/xorg.conf.d/99-calibration.conf /etc/X11/xorg.conf.d
+sudo cp $ZYNTHIAN_UI_DIR/etc/X11/xorg.conf.d/99-pitft.conf /etc/X11/xorg.conf.d
 
 # User
-cp $ZYNTHIAN_SW_DIR/etc/zynaddsubfxXML.cfg ~/.zynaddsubfxXML.cfg
-sudo cp $ZYNTHIAN_SW_DIR/etc/zynaddsubfxXML.cfg /root/.zynaddsubfxXML.cfg
+cp $ZYNTHIAN_UI_DIR/etc/zynaddsubfxXML.cfg ~/.zynaddsubfxXML.cfg
+sudo cp $ZYNTHIAN_UI_DIR/etc/zynaddsubfxXML.cfg /root/.zynaddsubfxXML.cfg
 
 #------------------------------------------------
 # Install Required Debian Packages
@@ -105,7 +107,7 @@ sudo apt-get -y install laditools
 
 # Fluidsynth & SF2
 sudo apt-get install fluidsynth fluid-soundfont-gm fluid-soundfont-gs
-mkdir $ZYNTHIAN_DIR/sf2
+mkdir $ZYNTHIAN_DATA_DIR/soundfonts
 ln -s /usr/share/sounds/sf2/*.sf2 .
 
 # Linuxsampler => Quizas haya que compilar para la version 2?
@@ -165,7 +167,7 @@ sudo apt-get -y install python3-pip
 #------------------------------------------------
 #************************************************
 
-mkdir $ZYNTHIAN_DIR/software
+mkdir $ZYNTHIAN_DIR/zynthian-sw
 
 #------------------------------------------------
 # Install NTK
@@ -179,7 +181,7 @@ sudo ./waf install
 #------------------------------------------------
 # Install zynaddsubfx
 #------------------------------------------------
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone https://github.com/fundamental/zynaddsubfx.git
 cd zynaddsubfx
 mkdir build.rbpi
@@ -192,10 +194,14 @@ ccmake .
 make -j 4
 sudo make install
 
+#Create soft link to zynbanks
+cd $ZYNTHIAN_DATA_DIR
+ln -s ../zynthian-sw/zynaddsubfx/instruments/banks zynbanks
+
 #------------------------------------------------
 # Install alsaseq python library
 #------------------------------------------------
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 wget https://pypi.python.org/packages/source/a/alsaseq/alsaseq-0.4.1.tar.gz
 tar xfvz alsaseq-0.4.1.tar.gz
 cd alsaseq-0.4.1
@@ -205,7 +211,7 @@ sudo python3 setup.py install
 #------------------------------------------------
 # Install wiringPi
 #------------------------------------------------
-#cd $ZYNTHIAN_SW_DIR/software
+#cd $ZYNTHIAN_SW_DIR
 #git clone git://git.drogon.net/wiringPi
 #git pull origin
 #./build
@@ -213,7 +219,7 @@ sudo python3 setup.py install
 #------------------------------------------------
 # Install pyliblo (liblo OSC library for Python)
 #------------------------------------------------
-cd $ZYNTHIAN_SW_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone https://github.com/dsacre/pyliblo.git
 cd pyliblo
 python3 ./setup.py build
@@ -222,7 +228,7 @@ sudo python3 ./setup.py install
 #------------------------------------------------
 # Install rtosc library & oscprompt
 #------------------------------------------------
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone https://github.com/fundamental/rtosc.git
 cd rtosc
 mkdir build
@@ -230,7 +236,7 @@ cd build
 cmake ..
 sudo make install
 
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone https://github.com/fundamental/oscprompt.git
 cd oscprompt
 mkdir build
@@ -242,13 +248,13 @@ sudo make install
 # Install TkinterTreectrl
 #------------------------------------------------
 sudo apt-get -y install tktreectrl
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 wget http://downloads.sourceforge.net/project/tkintertreectrl/TkinterTreectrl-2.0/TkinterTreectrl-2.0.1.zip
 unzip TkinterTreectrl-2.0.1.zip
 cd TkinterTreectrl-2.0.1
 python3 setup.py build
 sudo python3 setup.py install
-rm -f $ZYNTHIAN_DIR/software/TkinterTreectrl-2.0.1.zip
+rm -f $ZYNTHIAN_SW_DIR/TkinterTreectrl-2.0.1.zip
 
 #------------------------------------------------
 # Install QSampler
@@ -258,7 +264,7 @@ sudo ln -s /usr/lib/arm-linux-gnueabihf/qt5/bin/qmake /usr/bin/qmake-qt5
 sudo apt-get -y install libqt5x11extras5-dev qt4-linguist-tools
 sudo apt-get -y install liblscp-dev
 sudo apt-get -y install libgig-dev
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone http://git.code.sf.net/p/qsampler/code qsampler
 cd qsampler
 make -f Makefile.git 
@@ -269,7 +275,7 @@ sudo make install
 #------------------------------------------------
 # Install Fantasia (linuxsampler Java GUI)
 #------------------------------------------------
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 mkdir fantasia
 cd fantasia
 wget http://downloads.sourceforge.net/project/jsampler/Fantasia/Fantasia%200.9/Fantasia-0.9.jar
@@ -279,7 +285,7 @@ wget http://downloads.sourceforge.net/project/jsampler/Fantasia/Fantasia%200.9/F
 # Install Dexed Plugin
 #------------------------------------------------
 sudo apt-get -y install x11proto-xinerama-dev libxinerama-dev libxcursor-dev
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone https://github.com/asb2m10/dexed.git
 cd dexed/Builds/Linux
 make
@@ -287,9 +293,14 @@ make
 #------------------------------------------------
 # Install setBfree
 #------------------------------------------------
-cd $ZYNTHIAN_DIR/software
+cd $ZYNTHIAN_SW_DIR
 git clone https://github.com/pantherb/setBfree.git
 cd setBfree
 sed -i -- 's/\-msse \-msse2 \-mfpmath\=sse/\-mcpu\=cortex\-a7 \-mfpu\=neon\-vfpv4 \-mfloat\-abi\=hard \-funsafe\-math\-optimizations/g' common.mak
 make -j 4 ENABLE_ALSA=yes
 sudo make install
+
+#Create directory and soft link to config files
+cd $ZYNTHIAN_DATA_DIR
+mkdir setbfree
+ln -s /usr/local/share/setBfree/pgm/default.pgm setbfree/default.pgm
