@@ -303,4 +303,6 @@ sudo make install
 #Create directory and soft link to config files
 cd $ZYNTHIAN_DATA_DIR
 mkdir setbfree
-ln -s /usr/local/share/setBfree/pgm/default.pgm setbfree/default.pgm
+cd setbfree
+ln -s /usr/local/share/setBfree/pgm/default.pgm .
+ln -s /usr/local/share/setBfree/pgm/popular.pgm .
